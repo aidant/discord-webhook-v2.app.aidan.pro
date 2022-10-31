@@ -12,7 +12,6 @@
   } from '@lazy/oauth2-authorization-code-pkce-client'
   import type { RESTPostOAuth2AccessTokenWithBotAndWebhookIncomingScopeResult } from 'discord-api-types/v10'
   import { createEventDispatcher } from 'svelte'
-  import Link from '../../../../../../discord-webhook.app.aidan.pro/src/components/link.svelte'
 
   const dispatch = createEventDispatcher<{ webhook: Webhook }>()
 
@@ -31,9 +30,10 @@
 </script>
 
 {#await contextPromise then context}
-  <Link
-    external
-    class="rounded-lg my-4 mx-auto text-center"
+  <a
+    target="_blank"
+    rel="noopener noreferrer"
+    class="rounded-lg my-4 mx-auto text-center inline-block font-medium underline decoration-rose-500 decoration-2 underline-offset-1 hover:decoration-4 hover:underline-offset-0 after:content-['_↗']"
     href={context.url.href}
     on:click={() => handleClick(context)}
   >
@@ -49,5 +49,5 @@
       />
     </svg>
     Create a new Webhook
-  </Link>
+  </a>
 {/await}
