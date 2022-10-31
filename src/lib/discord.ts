@@ -11,12 +11,12 @@ const discord = async (
   method: Method,
   path: `/${string}`,
   body?: FormData | object,
-  reason?: string
+  reason = '',
 ) => {
   const response = await fetch(`${DISCORD_API_URL}${path}`, {
     method,
     headers: {
-      'Content-Type': typeof body === 'object' ? 'application/json; charset=utf-8' : undefined,
+      'Content-Type': typeof body === 'object' ? 'application/json; charset=utf-8' : '',
       'X-Audit-Log-Reason': reason,
     },
     body: typeof body === 'object' ? JSON.stringify(body) : body,
@@ -33,7 +33,7 @@ type APIWebhookWithoutUser = Omit<APIWebhook, 'user'>
 
 export const getWebhookWithToken = async (
   webhookId: string,
-  token: string
+  token: string,
 ): Promise<APIWebhookWithoutUser> => {
   return discord('GET', `/webhooks/${webhookId}/${token}`)
 }
@@ -42,7 +42,7 @@ export const modifyWebhookWithToken = async (
   webhookId: string,
   token: string,
   body: Pick<APIWebhook, 'name' | 'avatar'>,
-  reason?: string
+  reason?: string,
 ): Promise<APIWebhookWithoutUser> => {
   return discord('PATCH', `/webhooks/${webhookId}/${token}`, body, reason)
 }
@@ -50,7 +50,7 @@ export const modifyWebhookWithToken = async (
 export const deleteWebhookWithToken = async (
   webhookId: string,
   token: string,
-  reason?: string
+  reason?: string,
 ): Promise<void> => {
   return discord('DELETE', `/webhooks/${webhookId}/${token}`, undefined, reason)
 }
@@ -59,7 +59,7 @@ export const executeWebhook = async (
   webhookId: string,
   token: string,
   body: Exclude<RESTPostAPIWebhookWithTokenJSONBody, 'attachments' | 'components'>,
-  files: File[]
+  files: File[],
 ) => {
   const form = new FormData()
   const attachments: RESTPostAPIWebhookWithTokenJSONBody['attachments'] = []
@@ -82,13 +82,13 @@ export const getWebhookMessage = async (
   webhookId: string,
   token: string,
   messageId: string,
-  threadId?: string
+  threadId?: string,
 ): Promise<APIMessage> => {
   return discord(
     'GET',
     threadId
       ? `/webhooks/${webhookId}/${token}/messages/${messageId}?thread_id=${threadId}`
-      : `/webhooks/${webhookId}/${token}/messages/${messageId}`
+      : `/webhooks/${webhookId}/${token}/messages/${messageId}`,
   )
 }
 
@@ -97,7 +97,7 @@ export const editWebhookMessage = async (
   webhookId: string,
   token: string,
   messageId: string,
-  body: FormData
+  body: FormData,
 ): Promise<APIMessage> => {
   return discord('PATCH', `/webhooks/${webhookId}/${token}/messages/${messageId}`, body)
 }
@@ -105,7 +105,7 @@ export const editWebhookMessage = async (
 export const deleteWebhookMessage = async (
   webhookId: string,
   token: string,
-  messageId: string
+  messageId: string,
 ): Promise<void> => {
   return discord('DELETE', `/webhooks/${webhookId}/${token}/messages/${messageId}`)
 }

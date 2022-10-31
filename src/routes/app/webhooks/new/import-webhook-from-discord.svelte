@@ -1,17 +1,18 @@
 <script lang="ts">
+  import type { Webhook } from '$lib/database'
+  import {
+    DISCORD_CLIENT_ID,
+    DISCORD_OAUTH2_AUTHORIZE_URL,
+    DISCORD_OAUTH2_TOKEN_URL,
+  } from '$lib/environment'
   import {
     createAuthorizationCodeContext,
     getAccessToken,
     type AuthorizationCodeContext,
   } from '@lazy/oauth2-authorization-code-pkce-client'
-  import Link from '../components/link.svelte'
+  import type { RESTPostOAuth2AccessTokenWithBotAndWebhookIncomingScopeResult } from 'discord-api-types/v10'
   import { createEventDispatcher } from 'svelte'
-  import type { Webhook } from '../database'
-  import {
-    DISCORD_CLIENT_ID,
-    DISCORD_OAUTH2_AUTHORIZE_URL,
-    DISCORD_OAUTH2_TOKEN_URL,
-  } from '../environment'
+  import Link from '../../../../../../discord-webhook.app.aidan.pro/src/components/link.svelte'
 
   const dispatch = createEventDispatcher<{ webhook: Webhook }>()
 
@@ -21,9 +22,11 @@
   })
 
   const handleClick = async (context: AuthorizationCodeContext) => {
-    // @ts-ignore
-    const { webhook } = await getAccessToken(DISCORD_OAUTH2_TOKEN_URL, context)
-    dispatch('webhook', { webhookId: webhook.id, webhookToken: webhook.token })
+    const { webhook } = (await getAccessToken(
+      DISCORD_OAUTH2_TOKEN_URL,
+      context,
+    )) as RESTPostOAuth2AccessTokenWithBotAndWebhookIncomingScopeResult
+    dispatch('webhook', { webhookId: webhook.id, webhookToken: webhook.token! })
   }
 </script>
 

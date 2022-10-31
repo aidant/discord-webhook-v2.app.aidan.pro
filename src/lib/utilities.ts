@@ -4,7 +4,7 @@ export type Validator = (value: string) => string | undefined
 
 export const customValidatorFunction = (
   el: HTMLInputElement,
-  validator: Validator
+  validator: Validator,
 ): SvelteActionReturnType => {
   const handleInput = (event: Event) => {
     const errorMessage = validator(el.value)
@@ -25,7 +25,7 @@ export const customValidatorFunction = (
 
 export const customValidationText = (
   el: HTMLInputElement,
-  writable: Writable<string>
+  writable: Writable<string>,
 ): SvelteActionReturnType => {
   const handleInput = () => {
     writable.set(el.validationMessage)

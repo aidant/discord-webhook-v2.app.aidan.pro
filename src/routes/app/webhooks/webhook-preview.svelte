@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Webhook } from '../database'
+  import type { Webhook } from '$lib/database'
 
   export let webhook: Webhook
 
@@ -22,7 +22,11 @@
         src="https://cdn.discordapp.com/embed/avatars/0.png"
       />
     {/if}
-    <div class="group cursor-pointer" on:click={handleChangeAvatar}>
+    <div
+      class="group cursor-pointer"
+      on:click={handleChangeAvatar}
+      on:keypress={handleChangeAvatar}
+    >
       <div
         class="absolute inset-0 flex h-16 w-16 items-center rounded-full bg-black/50 text-center align-middle opacity-0 hover:opacity-100 group-hover:opacity-100"
       >

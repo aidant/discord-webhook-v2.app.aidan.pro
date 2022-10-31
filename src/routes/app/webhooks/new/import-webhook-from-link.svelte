@@ -1,8 +1,8 @@
 <script lang="ts">
+  import type { Webhook } from '$lib/database'
+  import { customValidationText, customValidatorFunction, type Validator } from '$lib/utilities'
   import { createEventDispatcher, onMount } from 'svelte'
   import { writable } from 'svelte/store'
-  import type { Webhook } from '../database'
-  import { customValidationText, customValidatorFunction, type Validator } from '../utilities'
 
   export let webhookURL = ''
   let webhookURLValidationText = writable('')
@@ -31,7 +31,7 @@
       return
     }
 
-    const text = event.clipboardData.getData('text/plain')
+    const text = event.clipboardData?.getData('text/plain') || ''
     if (!isWebhookURLInvalid(text)) {
       webhookURL = text
     }

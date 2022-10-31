@@ -3,7 +3,7 @@
 
   const dispatch = createEventDispatcher<{ close: never }>()
 
-  let dialog
+  let dialog: HTMLDialogElement
   onMount(() => {
     dialog.showModal()
   })
@@ -26,9 +26,7 @@
   }
 </script>
 
-<svelte:window on:keydown={handleKeyPress} />
-
-<div on:click={handleClick}>
+<div on:click={handleClick} on:keypress={handleKeyPress}>
   <dialog
     bind:this={dialog}
     class="container fixed inset-0 m-auto max-w-3xl overflow-hidden rounded-xl p-2 px-8 py-6 shadow-xl shadow-zinc-200"
