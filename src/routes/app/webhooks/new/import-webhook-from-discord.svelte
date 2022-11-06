@@ -3,39 +3,30 @@
   import {
     DISCORD_CLIENT_ID,
     DISCORD_OAUTH2_AUTHORIZE_URL,
+    DISCORD_OAUTH2_SERVER_URL,
     DISCORD_OAUTH2_TOKEN_URL,
   } from '$lib/environment'
-  import {
-    createAuthorizationCodeContext,
-    getAccessToken,
-    type AuthorizationCodeContext,
-  } from '@lazy/oauth2-authorization-code-pkce-client'
+  import '@lazy/oauth2-authorization-code-pkce-client/register-web-component.js'
   import type { RESTPostOAuth2AccessTokenWithBotAndWebhookIncomingScopeResult } from 'discord-api-types/v10'
   import { createEventDispatcher } from 'svelte'
 
   const dispatch = createEventDispatcher<{ webhook: Webhook }>()
 
-  const contextPromise = createAuthorizationCodeContext(DISCORD_OAUTH2_AUTHORIZE_URL, {
-    client_id: DISCORD_CLIENT_ID,
-    scope: 'webhook.incoming',
-  })
-
-  const handleClick = async (context: AuthorizationCodeContext) => {
-    const { webhook } = (await getAccessToken(
-      DISCORD_OAUTH2_TOKEN_URL,
-      context,
-    )) as RESTPostOAuth2AccessTokenWithBotAndWebhookIncomingScopeResult
-    dispatch('webhook', { webhookId: webhook.id, webhookToken: webhook.token! })
+  const handleCredentials = async (event: CustomEvent) => {
+    dispatch('webhook', { webhookId: event.detail.webhook.id, webhookToken: event.detail.webhook.token! })
   }
-</script>
 
-{#await contextPromise then context}
+</script>
+  <!-- svelte-ignore missing-declaration -->
+  <!-- svelte-ignore avoid-is -->
+  <!-- svelte-ignore a11y-missing-attribute -->
   <a
-    target="_blank"
-    rel="noopener noreferrer"
+    is="lazy-oauth2-authorization-code-pkce-client2"
     class="rounded-lg my-4 mx-auto text-center inline-block font-medium underline decoration-rose-500 decoration-2 underline-offset-1 hover:decoration-4 hover:underline-offset-0 after:content-['_↗']"
-    href={context.url.href}
-    on:click={() => handleClick(context)}
+    server:endpoint={DISCORD_OAUTH2_SERVER_URL}
+    oauth2:client_id={DISCORD_CLIENT_ID}
+    oauth2:scope="webhook.incoming"
+    on:oauth2:credentials={handleCredentials}
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -50,4 +41,3 @@
     </svg>
     Create a new Webhook
   </a>
-{/await}
