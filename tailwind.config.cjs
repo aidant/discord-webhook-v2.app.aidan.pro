@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       transitionProperty: {
-        'height': 'height',
+        'position': 'top, left, right, bottom',
         'spacing': 'margin, padding',
       },
     },
